@@ -66,13 +66,13 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("api/Users/search/{name}")]
-        public IHttpActionResult Search(string name)
+        [Route("api/Users/{id}/search/{name}")]
+        public IHttpActionResult Search(string name, int id)
         {
             try
             {
                 Users_DAL UDAL = new Users_DAL();
-                List<User> usersToReturn = UDAL.searchUsers(name);
+                List<User> usersToReturn = UDAL.searchUsers(name, id);
                 if (usersToReturn != null) return Content(HttpStatusCode.OK, usersToReturn);
                 return Content(HttpStatusCode.NotFound, "There are no users with this name");
             }
@@ -91,6 +91,22 @@ namespace Connectify_FinalProj_Backend.Controllers
                 Users_DAL UDAL = new Users_DAL();
                 if(UDAL.addFriend(idCurrent, idToAdd)==1) return Content(HttpStatusCode.Created,"Friend request sent!");
                 return Content(HttpStatusCode.BadRequest, "Cannot send a friend request");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/Users/friend/{idCurrent}/{idToConfirm}")]
+        public IHttpActionResult ConfirmFriend(int idCurrent, int idToConfirm)
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                if (UDAL.confirmFriendRequest(idCurrent, idToConfirm) > 0) return Content(HttpStatusCode.OK, "Friend request approved!");
+                return Content(HttpStatusCode.BadRequest, "Cannot approve friend request");
             }
             catch (Exception e)
             {

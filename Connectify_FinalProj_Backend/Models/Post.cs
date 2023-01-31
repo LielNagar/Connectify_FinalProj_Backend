@@ -9,13 +9,15 @@ namespace Connectify_FinalProj_Backend.Models
     {
         private int id;
         private int publisher;
+        private string userName;
         private DateTime date;
         private int likes;
         private int dislikes;
         private string content;
 
-        public Post(int publisher, DateTime date, int likes, int dislikes, string content)
+        public Post(int publisher, string userName, DateTime date, int likes, int dislikes, string content)
         {
+            this.UserName = userName;
             this.Publisher = publisher;
             this.Date = date;
             this.Likes = likes;
@@ -30,5 +32,6 @@ namespace Connectify_FinalProj_Backend.Models
         public int Dislikes { get => dislikes; set => dislikes = value; }
         public string Content { get => content; set => content = value; }
         public int Id { get => id; set => id = value; }
+        public string UserName { get => userName; set => userName = value; }
     }
 }

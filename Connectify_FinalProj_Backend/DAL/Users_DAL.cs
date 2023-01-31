@@ -66,6 +66,27 @@ namespace Connectify_FinalProj_Backend.DAL
             command.CommandTimeout = 10; // in seconds
             return command;
         }
+        
+        public int confirmFriendRequest(int idCurrent, int idToConfirm)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createConfirmFriendRequestCommand(con, idCurrent, idToConfirm);
+            int numAffected = command.ExecuteNonQuery();
+            con.Close();
+            return numAffected;
+        }
+
+        private SqlCommand createConfirmFriendRequestCommand(SqlConnection con, int idCurrent, int idToConfirm)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@idCurrent", idCurrent);
+            command.Parameters.AddWithValue("@idToConfirm", idToConfirm);
+            command.CommandText = "spConfirmFriendRequest";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
 
         public int addFriend(int idCurrent, int idToAdd)
         {
@@ -88,10 +109,10 @@ namespace Connectify_FinalProj_Backend.DAL
             return command;
         }
         
-        public List<User> searchUsers(string name)
+        public List<User> searchUsers(string name, int id)
         {
             SqlConnection con = Connect();
-            SqlCommand command = createSearchUsersCommand(con, name);
+            SqlCommand command = createSearchUsersCommand(con, name, id);
             SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             List<User> users = new List<User>();
             while (dr.Read())
@@ -108,10 +129,11 @@ namespace Connectify_FinalProj_Backend.DAL
             return null;
         }
 
-        private SqlCommand createSearchUsersCommand(SqlConnection con, string name)
+        private SqlCommand createSearchUsersCommand(SqlConnection con, string name, int id)
         {
             SqlCommand command = new SqlCommand();
             command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@id", id);
             command.CommandText = "spGetSearchUsers";
             command.Connection = con;
             command.CommandType = System.Data.CommandType.StoredProcedure;

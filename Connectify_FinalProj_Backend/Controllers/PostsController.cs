@@ -14,24 +14,23 @@ namespace Connectify_FinalProj_Backend.Controllers
         // GET api/<controller>
         public IHttpActionResult Get()
         {
-            try
-            {
-                Posts_DAL PDAL = new Posts_DAL();
-                List<Post> posts = PDAL.getPosts();
-                if (posts != null) return Content(HttpStatusCode.OK, posts);
-                return Content(HttpStatusCode.NotFound, "No posts at the DB");
-            }
-            catch(Exception e)
-            {
-                return Content(HttpStatusCode.BadGateway, e.Message);
-            }
-            
+            return null;
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            try
+            {
+                Posts_DAL PDAL = new Posts_DAL();
+                List<Post> posts = PDAL.getPosts(id);
+                if (posts != null) return Content(HttpStatusCode.OK, posts);
+                return Content(HttpStatusCode.NotFound, "No posts at the DB");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
         }
 
         // POST api/<controller>
