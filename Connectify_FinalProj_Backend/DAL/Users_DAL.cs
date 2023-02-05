@@ -24,7 +24,8 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.UserName = dr["userName"].ToString();
                 user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 user.Email = dr["email"].ToString();
-
+                user.Gender = Convert.ToBoolean(dr["gender"]);
+                user.Birthday = Convert.ToDateTime(dr["birthday"]);
             }
             con.Close();
             return user;
@@ -233,6 +234,8 @@ namespace Connectify_FinalProj_Backend.DAL
             command.Parameters.AddWithValue("@userName", user.UserName);
             command.Parameters.AddWithValue("@profileImgUrl", user.ProfileImgUrl);
             command.Parameters.AddWithValue("@email", user.Email);
+            command.Parameters.AddWithValue("@birthday", user.Birthday);
+            command.Parameters.AddWithValue("@gender", user.Gender);
             command.CommandText = "spPostUser";
             command.Connection = con;
             command.CommandType = System.Data.CommandType.StoredProcedure;
