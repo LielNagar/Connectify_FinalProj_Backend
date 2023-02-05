@@ -18,9 +18,11 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            Users_DAL UDAL = new Users_DAL();
+            User user = UDAL.getUserDetails(id);
+            return Content(HttpStatusCode.OK, user);
         }
 
         // POST api/<controller>

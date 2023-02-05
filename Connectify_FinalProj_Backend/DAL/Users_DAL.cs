@@ -11,6 +11,36 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Users_DAL
     {
+        public User getUserDetails(int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createGetUserDetailsCommand(con, id);
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            User user = new User();
+            while (dr.Read())
+            {
+                
+                user.Id = Convert.ToInt32(dr["id"]);
+                user.UserName = dr["userName"].ToString();
+                user.ProfileImgUrl = dr["profileImgUrl"].ToString();
+                user.Email = dr["email"].ToString();
+
+            }
+            con.Close();
+            return user;
+        }
+
+        private SqlCommand createGetUserDetailsCommand(SqlConnection con, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@id", id);
+            command.CommandText = "spGetUserDetails";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
+
         public List<User> getUserPendingRequests(int id)
         {
             SqlConnection con = Connect();
@@ -25,6 +55,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userFriends.Add(user);
             }
+            con.Close();
             return userFriends;
         }
 
@@ -53,6 +84,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userFriends.Add(user);
             }
+            con.Close();
             return userFriends;
         }
 
@@ -125,6 +157,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 users.Add(user);
             }
+            con.Close();
             if (users != null) return users;
             return null;
         }
@@ -155,9 +188,14 @@ namespace Connectify_FinalProj_Backend.DAL
                 userToReturn.Password = dr["password"].ToString();
                 userToReturn.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userToReturn.UserName = dr["userName"].ToString();
+                con.Close();
                 return userToReturn;
             }
-            else return null;
+            else
+            {
+                con.Close();
+                return null;
+            }
         }
 
         private SqlCommand createGetUserLoginCommand(SqlConnection con, User user)
@@ -179,7 +217,9 @@ namespace Connectify_FinalProj_Backend.DAL
             int numAffected = command.ExecuteNonQuery();
             if (numAffected == 1)
             {
-
+                SqlCommand cmd = new SqlCommand("SELECT TOP 1 id FROM users ORDER BY id DESC", con);
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.Read()) user.Id = Convert.ToInt32(dr["id"]);
             }
             con.Close();
             return numAffected;
