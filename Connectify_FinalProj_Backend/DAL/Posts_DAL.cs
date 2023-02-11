@@ -32,6 +32,40 @@ namespace Connectify_FinalProj_Backend.DAL
             return command;
         }
 
+        public List<Post> getPostsForWall(int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createGetPostsForWallCommand(con, id);
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            List<Post> posts = new List<Post>();
+            while (dr.Read())
+            {
+                Post post = new Post();
+                post.Id = Convert.ToInt32(dr["postId"]);
+                post.Likes = Convert.ToInt32(dr["likes"]);
+                post.Dislikes = Convert.ToInt32(dr["dislikes"]);
+                post.Publisher = Convert.ToInt32(dr["publisherId"]);
+                post.Content = dr["content"].ToString();
+                post.Date = Convert.ToDateTime(dr["date_published"]);
+                post.UserName = dr["userName"].ToString();
+                posts.Add(post);
+            }
+            con.Close();
+            if (posts != null) return posts;
+            return null;
+        }
+
+        private SqlCommand createGetPostsForWallCommand(SqlConnection con, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@id", id);
+            command.CommandText = "spGetPostsForWall";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
+
         public List<Post> getPosts(int id)
         {
             SqlConnection con = Connect();

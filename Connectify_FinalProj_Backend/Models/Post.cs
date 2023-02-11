@@ -14,9 +14,11 @@ namespace Connectify_FinalProj_Backend.Models
         private int likes;
         private int dislikes;
         private string content;
+        private int onWall;
 
-        public Post(int publisher, string userName, DateTime date, int likes, int dislikes, string content)
+        public Post(int publisher, string userName, DateTime date, int likes, int dislikes, string content, int onWall)
         {
+            this.onWall = onWall;
             this.UserName = userName;
             this.Publisher = publisher;
             this.Date = date;
@@ -33,5 +35,6 @@ namespace Connectify_FinalProj_Backend.Models
         public string Content { get => content; set => content = value; }
         public int Id { get => id; set => id = value; }
         public string UserName { get => userName; set => userName = value; }
+        public int OnWall { get => onWall; set => onWall = value; }
     }
 }

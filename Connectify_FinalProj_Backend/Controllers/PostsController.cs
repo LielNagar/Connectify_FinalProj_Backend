@@ -33,6 +33,23 @@ namespace Connectify_FinalProj_Backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/Posts/{id}/Wall")]
+        public IHttpActionResult GetForWall(int id)
+        {
+            try
+            {
+                Posts_DAL PDAL = new Posts_DAL();
+                List<Post> posts = PDAL.getPostsForWall(id);
+                if (posts != null) return Content(HttpStatusCode.OK, posts);
+                return Content(HttpStatusCode.NotFound, "No posts at the DB");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
         // POST api/<controller>
         public IHttpActionResult Post([FromBody] Post post)
         {
