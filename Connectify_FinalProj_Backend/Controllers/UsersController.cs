@@ -46,7 +46,7 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public void Delete(int id1, int id2)
         {
         }
 
@@ -102,19 +102,19 @@ namespace Connectify_FinalProj_Backend.Controllers
 
         [HttpPut]
         [Route("api/Users/friend/{idCurrent}/{idToConfirm}")]
-        public IHttpActionResult ConfirmFriend(int idCurrent, int idToConfirm)
-        {
-            try
+            public IHttpActionResult ConfirmFriend(int idCurrent, int idToConfirm)
             {
-                Users_DAL UDAL = new Users_DAL();
-                if (UDAL.confirmFriendRequest(idCurrent, idToConfirm) > 0) return Content(HttpStatusCode.OK, "Friend request approved!");
-                return Content(HttpStatusCode.BadRequest, "Cannot approve friend request");
+                try
+                {
+                    Users_DAL UDAL = new Users_DAL();
+                    if (UDAL.confirmFriendRequest(idCurrent, idToConfirm) > 0) return Content(HttpStatusCode.OK, "Friend request approved!");
+                    return Content(HttpStatusCode.BadRequest, "Cannot approve friend request");
+                }
+                catch (Exception e)
+                {
+                    return Content(HttpStatusCode.BadGateway, e.Message);
+                }
             }
-            catch (Exception e)
-            {
-                return Content(HttpStatusCode.BadGateway, e.Message);
-            }
-        }
 
         [HttpGet]
         [Route("api/Users/{id}/Friends")]
@@ -145,6 +145,38 @@ namespace Connectify_FinalProj_Backend.Controllers
                 return Content(HttpStatusCode.NotFound, "No pending friend requests");
             }
             catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/Users/{id}/requests")]
+        public IHttpActionResult getUserRequests(int id)
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                List<Request> userRequests = UDAL.getUserRequests(id);
+                if (userRequests.Count>0) return Content(HttpStatusCode.OK, userRequests);
+                return Content(HttpStatusCode.NotFound, "No requests for user");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/Users/friend/{idCurrent}/{idToDelete}")]
+        public IHttpActionResult deleteFriendship(int idCurrent, int idToDelete)
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                if (UDAL.deleteFriendship(idCurrent, idToDelete) > 0) return Content(HttpStatusCode.OK, "DELETED");
+                else return Content(HttpStatusCode.NotFound, "NO SUCH A FRIENDSHIP");
+            }catch(Exception e)
             {
                 return Content(HttpStatusCode.BadGateway, e.Message);
             }

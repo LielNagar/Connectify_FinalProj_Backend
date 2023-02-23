@@ -11,6 +11,27 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Users_DAL
     {
+        public int deleteFriendship(int idCurrent, int idToDelete)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createDeleteFriendshipCommand(con, idCurrent, idToDelete);
+            int numAffected = command.ExecuteNonQuery();
+            con.Close();
+            return numAffected;
+        }
+
+        private SqlCommand createDeleteFriendshipCommand(SqlConnection con, int idCurrent, int idToDelete)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@idCurrent", idCurrent);
+            command.Parameters.AddWithValue("@idToDelete", idToDelete);
+            command.CommandText = "spDeleteFriendship";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
+
         public User getUserDetails(int id)
         {
             SqlConnection con = Connect();
@@ -65,6 +86,35 @@ namespace Connectify_FinalProj_Backend.DAL
             SqlCommand command = new SqlCommand();
             command.Parameters.AddWithValue("@id", id);
             command.CommandText = "spGetUserPendingRequests";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
+
+        public List<Request> getUserRequests(int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createGetUserRequestsCommand(con, id);
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            List<Request> userRequests = new List<Request>();
+            while (dr.Read())
+            {
+                Request request = new Request();
+                request.Status = dr["status"].ToString();
+                request.User1_id = Convert.ToInt32(dr["user1_id"]);
+                request.User2_id = Convert.ToInt32(dr["user2_id"]);
+                userRequests.Add(request);
+            }
+            con.Close();
+            return userRequests;
+        }
+
+        private SqlCommand createGetUserRequestsCommand(SqlConnection con, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@id", id);
+            command.CommandText = "spGetUserRequests";
             command.Connection = con;
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.CommandTimeout = 10; // in seconds

@@ -15,6 +15,7 @@ namespace Connectify_FinalProj_Backend.Models
         private string profileImgUrl;
         private DateTime birthday;
         private bool gender;
+        private List<User> friends;
 
         public User(int id, string userName, string email, string location, string password, string profileImgUrl, DateTime birthday, bool gender)
         {
@@ -38,5 +39,6 @@ namespace Connectify_FinalProj_Backend.Models
         public string ProfileImgUrl { get => profileImgUrl; set => profileImgUrl = value; }
         public DateTime Birthday { get => birthday; set => birthday = value; }
         public bool Gender { get => gender; set => gender = value; }
+        public List<User> Friends { get => friends; set => friends = value; }
     }
 }

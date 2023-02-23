@@ -50,6 +50,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 post.UserName = dr["userName"].ToString();
                 posts.Add(post);
             }
+
             con.Close();
             if (posts != null) return posts;
             return null;
