@@ -282,7 +282,6 @@ namespace Connectify_FinalProj_Backend.DAL
             command.Parameters.AddWithValue("@location", user.Location);
             command.Parameters.AddWithValue("@password", user.Password);
             command.Parameters.AddWithValue("@userName", user.UserName);
-            command.Parameters.AddWithValue("@profileImgUrl", user.ProfileImgUrl);
             command.Parameters.AddWithValue("@email", user.Email);
             command.Parameters.AddWithValue("@birthday", user.Birthday);
             command.Parameters.AddWithValue("@gender", user.Gender);

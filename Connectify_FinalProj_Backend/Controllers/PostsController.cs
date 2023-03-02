@@ -34,13 +34,13 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("api/Posts/{id}/Wall")]
-        public IHttpActionResult GetForWall(int id)
+        [Route("api/Posts/{currentId}/Wall/{userId}")]
+        public IHttpActionResult GetForWall(int currentId, int userId)
         {
             try
             {
                 Posts_DAL PDAL = new Posts_DAL();
-                List<Post> posts = PDAL.getPostsForWall(id);
+                List<Post> posts = PDAL.getPostsForWall(currentId, userId);
                 if (posts != null) return Content(HttpStatusCode.OK, posts);
                 return Content(HttpStatusCode.NotFound, "No posts at the DB");
             }
@@ -56,24 +56,53 @@ namespace Connectify_FinalProj_Backend.Controllers
             try
             {
                 Posts_DAL PDAL = new Posts_DAL();
-                if (PDAL.postAPost(post) == 1) return Content(HttpStatusCode.Created,post);
+                if (PDAL.postAPost(post) == 1) return Content(HttpStatusCode.Created, post);
                 return Content(HttpStatusCode.BadRequest, post);
             }
             catch (Exception e)
             {
                 return Content(HttpStatusCode.BadGateway, e.Message);
             }
+        }
 
+        [HttpPost]
+        [Route("api/Posts/Likes/{postId}/{userId}")]
+        public IHttpActionResult LikeAPost(int postId, int userId)
+        {
+            Posts_DAL PDAL = new Posts_DAL();
+            if (PDAL.LikeAPost(postId, userId) == 2) return Content(HttpStatusCode.Created, postId);
+            return Content(HttpStatusCode.BadRequest, postId);
+        }
+
+        [HttpPost]
+        [Route("api/Posts/Favorite/{postId}/{userId}")]
+        public IHttpActionResult MakeAsFavoriteAPost(int postId, int userId)
+        {
+            Posts_DAL PDAL = new Posts_DAL();
+            if (PDAL.MakeAsFavoriteAPost(postId, userId) == 1) return Content(HttpStatusCode.Created, postId);
+            return Content(HttpStatusCode.BadRequest, postId);
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
+        public IHttpActionResult Put(int id)
         {
+            //NO NEED FOR THIS AT THE MOMENT
+            return null;
         }
 
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
         }
+
+        [HttpDelete]
+        [Route("api/Posts/Favorite/{postId}/{userId}")]
+        public IHttpActionResult MakeAsUnFavoriteAPost(int postId, int userId)
+        {
+            Posts_DAL PDAL = new Posts_DAL();
+            if (PDAL.MakeAsUnFavoriteAPost(postId, userId) == 1) return Content(HttpStatusCode.Created, postId);
+            return Content(HttpStatusCode.BadRequest, postId);
+        }
+
     }
 }

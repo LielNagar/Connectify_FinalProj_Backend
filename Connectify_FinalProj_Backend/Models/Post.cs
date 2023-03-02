@@ -15,9 +15,13 @@ namespace Connectify_FinalProj_Backend.Models
         private int dislikes;
         private string content;
         private int onWall;
+        private bool isFav;
+        private bool isLiked;
 
-        public Post(int publisher, string userName, DateTime date, int likes, int dislikes, string content, int onWall)
+        public Post(int publisher, string userName, DateTime date, int likes, int dislikes, string content, int onWall, bool isFav, bool isLiked)
         {
+            this.isLiked = isLiked;
+            this.isFav = isFav;
             this.onWall = onWall;
             this.UserName = userName;
             this.Publisher = publisher;
@@ -36,5 +40,7 @@ namespace Connectify_FinalProj_Backend.Models
         public int Id { get => id; set => id = value; }
         public string UserName { get => userName; set => userName = value; }
         public int OnWall { get => onWall; set => onWall = value; }
+        public bool IsFav { get => isFav; set => isFav = value; }
+        public bool IsLiked { get => isLiked; set => isLiked = value; }
     }
 }
