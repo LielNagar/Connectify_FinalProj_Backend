@@ -52,6 +52,26 @@ namespace Connectify_FinalProj_Backend.DAL
 
         }
 
+        public int UnLikeAPost(int postId, int userId)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createUnLikeAPost(con, postId, userId);
+            int numAffected = command.ExecuteNonQuery();
+            con.Close();
+            return numAffected;
+        }
+        private SqlCommand createUnLikeAPost(SqlConnection con, int postId, int userId)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@postId", postId);
+            command.Parameters.AddWithValue("@userId", userId);
+            command.CommandText = "spUnLikeAPost";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+
+        }
         public int LikeAPost(int postId, int userId)
         {
             SqlConnection con = Connect();

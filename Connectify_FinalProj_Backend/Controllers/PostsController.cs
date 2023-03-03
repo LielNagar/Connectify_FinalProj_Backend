@@ -96,11 +96,20 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpDelete]
+        [Route("api/Posts/Likes/{postId}/{userId}")]
+        public IHttpActionResult UnLikeAPost(int postId, int userId)
+        {
+            Posts_DAL PDAL = new Posts_DAL();
+            if (PDAL.UnLikeAPost(postId, userId) == 2) return Content(HttpStatusCode.OK, postId);
+            return Content(HttpStatusCode.BadRequest, postId);
+        }
+
+        [HttpDelete]
         [Route("api/Posts/Favorite/{postId}/{userId}")]
         public IHttpActionResult MakeAsUnFavoriteAPost(int postId, int userId)
         {
             Posts_DAL PDAL = new Posts_DAL();
-            if (PDAL.MakeAsUnFavoriteAPost(postId, userId) == 1) return Content(HttpStatusCode.Created, postId);
+            if (PDAL.MakeAsUnFavoriteAPost(postId, userId) == 1) return Content(HttpStatusCode.OK, postId);
             return Content(HttpStatusCode.BadRequest, postId);
         }
 
