@@ -11,6 +11,31 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Users_DAL
     {
+        public List<User> getCelebrators(int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createGetCelebratorsCommand(con, id);
+            List<User> users = new List<User>();
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {
+                User user = new User();
+                user.UserName = dr["userName"].ToString();
+                users.Add(user);
+            }
+            return users;
+        }
+
+        private SqlCommand createGetCelebratorsCommand(SqlConnection con, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@id", id);
+            command.CommandText = "spGetCelebrators";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
         public int deleteFriendship(int idCurrent, int idToDelete)
         {
             SqlConnection con = Connect();

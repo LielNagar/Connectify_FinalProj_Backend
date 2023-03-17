@@ -19,7 +19,7 @@ namespace Connectify_FinalProj_Backend.Controllers
 
         // GET api/<controller>/5
         public IHttpActionResult Get(int id)
-        {
+            {
             Users_DAL UDAL = new Users_DAL();
             User user = UDAL.getUserDetails(id);
             return Content(HttpStatusCode.OK, user);
@@ -77,6 +77,23 @@ namespace Connectify_FinalProj_Backend.Controllers
                 List<User> usersToReturn = UDAL.searchUsers(name, id);
                 if (usersToReturn != null) return Content(HttpStatusCode.OK, usersToReturn);
                 return Content(HttpStatusCode.NotFound, "There are no users with this name");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/Users/{id}/birthday")]
+        public IHttpActionResult getCelebrators(int id)
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                List<User> usersToReturn = UDAL.getCelebrators(id);
+                if (usersToReturn.Count>0) return Content(HttpStatusCode.OK, usersToReturn);
+                return Content(HttpStatusCode.NotFound, "No celebrators today");
             }
             catch (Exception e)
             {
