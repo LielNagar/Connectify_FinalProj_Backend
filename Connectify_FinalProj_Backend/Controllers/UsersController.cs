@@ -85,13 +85,13 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("api/Users/{id}/birthday")]
-        public IHttpActionResult getCelebrators(int id)
+        [Route("api/Users/{id}/dashboard")]
+        public IHttpActionResult getDashboard(int id)
         {
             try
             {
                 Users_DAL UDAL = new Users_DAL();
-                List<User> usersToReturn = UDAL.getCelebrators(id);
+                List<User> usersToReturn = UDAL.getDashboard(id);
                 if (usersToReturn.Count>0) return Content(HttpStatusCode.OK, usersToReturn);
                 return Content(HttpStatusCode.NotFound, "No celebrators today");
             }

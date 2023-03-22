@@ -11,7 +11,7 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Users_DAL
     {
-        public List<User> getCelebrators(int id)
+        public List<User> getDashboard(int id)
         {
             SqlConnection con = Connect();
             SqlCommand command = createGetCelebratorsCommand(con, id);
@@ -21,11 +21,24 @@ namespace Connectify_FinalProj_Backend.DAL
             {
                 User user = new User();
                 user.UserName = dr["userName"].ToString();
+                user.Id = Convert.ToInt32(dr["id"]);
                 users.Add(user);
             }
+            dr.Close();
+            con = Connect();
+            command = createGetUserPendingRequestsCommand(con, id);
+            dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {
+                User user = new User();
+                user.UserName = dr["userName"].ToString();
+                user.Id = Convert.ToInt32(dr["id"]);
+                user.Location = dr["location"].ToString();
+                users.Add(user);
+            }
+            con.Close();
             return users;
         }
-
         private SqlCommand createGetCelebratorsCommand(SqlConnection con, int id)
         {
             SqlCommand command = new SqlCommand();

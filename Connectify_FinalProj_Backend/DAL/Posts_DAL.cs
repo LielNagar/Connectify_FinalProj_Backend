@@ -11,6 +11,41 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Posts_DAL
     {
+        public List<Post> getUserFavoritePosts(int userId)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createGetUserFavoritePostsCommand(con, userId);
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            List<Post> posts = new List<Post>();
+            while (dr.Read())
+            {
+                Post post = new Post();
+                post.Id = Convert.ToInt32(dr["postId"]);
+                if (dr["isFav"] != System.DBNull.Value) post.IsFav = true;
+                if (dr["isLiked"] != System.DBNull.Value) post.IsLiked = true;
+                post.Likes = Convert.ToInt32(dr["likes"]);
+                post.Dislikes = Convert.ToInt32(dr["dislikes"]);
+                post.Publisher = Convert.ToInt32(dr["publisherId"]);
+                post.Content = dr["content"].ToString();
+                post.Date = Convert.ToDateTime(dr["date_published"]);
+                post.UserName = dr["userName"].ToString();
+                posts.Add(post);
+
+            }
+            con.Close();
+            return posts;
+        }
+        
+        private SqlCommand createGetUserFavoritePostsCommand(SqlConnection con, int userId)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@userId", userId);
+            command.CommandText = "spGetUserFavoritePosts";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
         public int MakeAsUnFavoriteAPost(int postId, int userId)
         {
             SqlConnection con = Connect();

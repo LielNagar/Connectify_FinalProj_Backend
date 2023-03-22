@@ -50,6 +50,23 @@ namespace Connectify_FinalProj_Backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/Posts/{userId}/Favorite")]
+        public IHttpActionResult getUserFavoritePosts(int userId)
+        {
+            try
+            {
+                Posts_DAL PDAL = new Posts_DAL();
+                List<Post> posts = PDAL.getUserFavoritePosts(userId);
+                if (posts.Count > 0) return Content(HttpStatusCode.OK, posts);
+                return Content(HttpStatusCode.NotFound, "How about to mark some posts?");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
         // POST api/<controller>
         public IHttpActionResult Post([FromBody] Post post)
         {
