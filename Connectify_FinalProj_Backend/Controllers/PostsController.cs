@@ -108,8 +108,19 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            try
+            {
+                Posts_DAL PDAL = new Posts_DAL();
+                if (PDAL.deletePost(id) > 0) return Content(HttpStatusCode.OK, "Post has been deleted");
+                return Content(HttpStatusCode.BadRequest, "Cannot delete post");
+            }
+            catch(Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+
         }
 
         [HttpDelete]

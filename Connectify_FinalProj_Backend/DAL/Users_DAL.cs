@@ -33,6 +33,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 User user = new User();
                 user.UserName = dr["userName"].ToString();
                 user.Id = Convert.ToInt32(dr["id"]);
+                user.Gender = Convert.ToInt16(dr["gender"]);
                 user.Location = dr["location"].ToString();
                 users.Add(user);
             }
@@ -81,9 +82,8 @@ namespace Connectify_FinalProj_Backend.DAL
                 
                 user.Id = Convert.ToInt32(dr["id"]);
                 user.UserName = dr["userName"].ToString();
-                user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 user.Email = dr["email"].ToString();
-                user.Gender = Convert.ToBoolean(dr["gender"]);
+                user.Gender = Convert.ToInt16(dr["gender"]);
                 user.Birthday = Convert.ToDateTime(dr["birthday"]);
             }
             con.Close();
@@ -112,7 +112,6 @@ namespace Connectify_FinalProj_Backend.DAL
                 User user = new User();
                 user.Id = Convert.ToInt32(dr["id"]);
                 user.UserName = dr["userName"].ToString();
-                user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userFriends.Add(user);
             }
             con.Close();
@@ -170,7 +169,6 @@ namespace Connectify_FinalProj_Backend.DAL
                 User user = new User();
                 user.Id = Convert.ToInt32(dr["user2_id"]);
                 user.UserName = dr["userName"].ToString();
-                user.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userFriends.Add(user);
             }
             con.Close();
@@ -243,7 +241,8 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.UserName = dr["userName"].ToString();
                 user.Email = dr["email"].ToString();
                 user.Location = dr["location"].ToString();
-                user.ProfileImgUrl = dr["profileImgUrl"].ToString();
+                user.Birthday = Convert.ToDateTime(dr["birthday"]);
+                user.Gender = Convert.ToInt16(dr["gender"]);
                 users.Add(user);
             }
             con.Close();
@@ -275,7 +274,6 @@ namespace Connectify_FinalProj_Backend.DAL
                 userToReturn.Location = dr["location"].ToString();
                 userToReturn.Email = dr["email"].ToString();
                 userToReturn.Password = dr["password"].ToString();
-                userToReturn.ProfileImgUrl = dr["profileImgUrl"].ToString();
                 userToReturn.UserName = dr["userName"].ToString();
                 con.Close();
                 return userToReturn;
@@ -320,6 +318,8 @@ namespace Connectify_FinalProj_Backend.DAL
             command.Parameters.AddWithValue("@location", user.Location);
             command.Parameters.AddWithValue("@password", user.Password);
             command.Parameters.AddWithValue("@userName", user.UserName);
+            command.Parameters.AddWithValue("@firstName", user.FirstName);
+            command.Parameters.AddWithValue("@lastName", user.LastName);
             command.Parameters.AddWithValue("@email", user.Email);
             command.Parameters.AddWithValue("@birthday", user.Birthday);
             command.Parameters.AddWithValue("@gender", user.Gender);

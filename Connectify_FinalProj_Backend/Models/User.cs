@@ -9,15 +9,17 @@ namespace Connectify_FinalProj_Backend.Models
     {
         private int id;
         private string userName;
+        private string firstName;
+        private string lastName;
         private string email;
         private string location;
         private string password;
         private string profileImgUrl;
         private DateTime birthday;
-        private bool gender;
+        private short gender;
         private List<User> friends;
 
-        public User(int id, string userName, string email, string location, string password, string profileImgUrl, DateTime birthday, bool gender)
+        public User(int id, string userName, string email, string location, string password, string profileImgUrl, DateTime birthday, short gender, string firstName, string lastName)
         {
             this.Birthday = birthday;
             this.gender = gender;
@@ -27,6 +29,8 @@ namespace Connectify_FinalProj_Backend.Models
             this.location = location;
             this.password = password;
             this.profileImgUrl = profileImgUrl;
+            this.FirstName = firstName;
+            this.LastName = lastName;
         }
 
         public User() { }
@@ -38,7 +42,9 @@ namespace Connectify_FinalProj_Backend.Models
         public string Password { get => password; set => password = value; }
         public string ProfileImgUrl { get => profileImgUrl; set => profileImgUrl = value; }
         public DateTime Birthday { get => birthday; set => birthday = value; }
-        public bool Gender { get => gender; set => gender = value; }
+        public short Gender { get => gender; set => gender = value; }
         public List<User> Friends { get => friends; set => friends = value; }
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => lastName; set => lastName = value; }
     }
 }

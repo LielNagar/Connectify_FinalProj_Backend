@@ -93,7 +93,7 @@ namespace Connectify_FinalProj_Backend.Controllers
                 Users_DAL UDAL = new Users_DAL();
                 List<User> usersToReturn = UDAL.getDashboard(id);
                 if (usersToReturn.Count>0) return Content(HttpStatusCode.OK, usersToReturn);
-                return Content(HttpStatusCode.NotFound, "No celebrators today");
+                return Content(HttpStatusCode.NotFound, "You dont have any new notifications");
             }
             catch (Exception e)
             {

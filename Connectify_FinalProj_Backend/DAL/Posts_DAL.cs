@@ -11,6 +11,25 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Posts_DAL
     {
+        public int deletePost(int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createDeletePostCommand(con, id);
+            int numAffected = command.ExecuteNonQuery();
+            con.Close();
+            return numAffected;
+        }
+
+        private SqlCommand createDeletePostCommand(SqlConnection con, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@postId", id);
+            command.CommandText = "spDeletePost";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
         public List<Post> getUserFavoritePosts(int userId)
         {
             SqlConnection con = Connect();
