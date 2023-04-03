@@ -19,16 +19,14 @@ namespace Connectify_FinalProj_Backend.Models
         private short gender;
         private List<User> friends;
 
-        public User(int id, string userName, string email, string location, string password, string profileImgUrl, DateTime birthday, short gender, string firstName, string lastName)
+        public User(string userName, string email, string location, string password, DateTime birthday, short gender, string firstName, string lastName)
         {
             this.Birthday = birthday;
             this.gender = gender;
-            this.id = id;
             this.userName = userName;
             this.email = email;
             this.location = location;
             this.password = password;
-            this.profileImgUrl = profileImgUrl;
             this.FirstName = firstName;
             this.LastName = lastName;
         }

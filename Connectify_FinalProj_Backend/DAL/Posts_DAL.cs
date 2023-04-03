@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
+using System.Web.Helpers;
 using Connectify_FinalProj_Backend.Models;
 
 namespace Connectify_FinalProj_Backend.DAL
@@ -54,7 +56,7 @@ namespace Connectify_FinalProj_Backend.DAL
             con.Close();
             return posts;
         }
-        
+
         private SqlCommand createGetUserFavoritePostsCommand(SqlConnection con, int userId)
         {
             SqlCommand command = new SqlCommand();
@@ -147,7 +149,7 @@ namespace Connectify_FinalProj_Backend.DAL
             return command;
 
         }
-        public int postAPost(Post post) 
+        public int postAPost(Post post)
         {
             SqlConnection con = Connect();
             SqlCommand command = createPostAPostCommand(con, post);
@@ -175,10 +177,10 @@ namespace Connectify_FinalProj_Backend.DAL
             return command;
         }
 
-        public List<Post> getPostsForWall(int currentId, int userId)
+        public List<Post> getPostsForWall(int userId)
         {
             SqlConnection con = Connect();
-            SqlCommand command = createGetPostsForWallCommand(con, currentId, userId);
+            SqlCommand command = createGetPostsForWallCommand(con, userId);
             SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             List<Post> posts = new List<Post>();
             while (dr.Read())
@@ -193,6 +195,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 post.Content = dr["content"].ToString();
                 post.Date = Convert.ToDateTime(dr["date_published"]);
                 post.UserName = dr["userName"].ToString();
+                post.OnWall = Convert.ToInt32( dr["onWall"]);
                 posts.Add(post);
             }
 
@@ -201,10 +204,10 @@ namespace Connectify_FinalProj_Backend.DAL
             return null;
         }
 
-        private SqlCommand createGetPostsForWallCommand(SqlConnection con, int currentId, int userId)
+        private SqlCommand createGetPostsForWallCommand(SqlConnection con, int userId)
         {
             SqlCommand command = new SqlCommand();
-            command.Parameters.AddWithValue("@currentId", currentId);
+            //command.Parameters.AddWithValue("@currentId", currentId);
             command.Parameters.AddWithValue("@userId", userId);
             command.CommandText = "spGetPostsForWall";
             command.Connection = con;
@@ -258,6 +261,20 @@ namespace Connectify_FinalProj_Backend.DAL
             // open the database connection
             con.Open();
             return con;
+        }
+
+        public int initTheDBWithPostsForUsers()
+        {
+            int numAffected = 0;
+            SqlConnection con = Connect();
+            for (int i = 1; i < 207; i++)
+            {
+                string postContet = "Hello, this is from the init script!";
+                Post post = new Post(i, 0, postContet);
+                SqlCommand command = createPostAPostCommand(con, post);
+                numAffected += command.ExecuteNonQuery();
+            }
+            return numAffected;
         }
     }
 }

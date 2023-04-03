@@ -34,13 +34,13 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("api/Posts/{currentId}/Wall/{userId}")]
-        public IHttpActionResult GetForWall(int currentId, int userId)
+        [Route("api/Posts/Wall/{userId}")]
+        public IHttpActionResult GetForWall(int userId)
         {
             try
             {
                 Posts_DAL PDAL = new Posts_DAL();
-                List<Post> posts = PDAL.getPostsForWall(currentId, userId);
+                List<Post> posts = PDAL.getPostsForWall(userId);
                 if (posts != null) return Content(HttpStatusCode.OK, posts);
                 return Content(HttpStatusCode.NotFound, "No posts at the DB");
             }
@@ -139,6 +139,15 @@ namespace Connectify_FinalProj_Backend.Controllers
             Posts_DAL PDAL = new Posts_DAL();
             if (PDAL.MakeAsUnFavoriteAPost(postId, userId) == 1) return Content(HttpStatusCode.OK, postId);
             return Content(HttpStatusCode.BadRequest, postId);
+        }
+
+        [HttpGet]
+        [Route("api/Posts/initTheDBwithUsersPosts")]
+        public IHttpActionResult initTheDBWithUsersPosts()
+        {
+            Posts_DAL PDAL = new Posts_DAL();
+            if (PDAL.initTheDBWithPostsForUsers() > 0) return Content(HttpStatusCode.Created, "Successfully initialized the DB with users posts");
+            else return Content(HttpStatusCode.BadRequest, "Something Bad Happened");
         }
 
     }

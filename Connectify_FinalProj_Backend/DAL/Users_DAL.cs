@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,18 +12,19 @@ namespace Connectify_FinalProj_Backend.DAL
 {
     public class Users_DAL
     {
-        public List<User> getDashboard(int id)
+        public List<List<User>> getDashboard(int id)
         {
             SqlConnection con = Connect();
             SqlCommand command = createGetCelebratorsCommand(con, id);
-            List<User> users = new List<User>();
+            List<User> celebrators = new List<User>();
+            List<User> penders = new List<User>();
             SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
             {
                 User user = new User();
                 user.UserName = dr["userName"].ToString();
                 user.Id = Convert.ToInt32(dr["id"]);
-                users.Add(user);
+                celebrators.Add(user);
             }
             dr.Close();
             con = Connect();
@@ -35,9 +37,13 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.Id = Convert.ToInt32(dr["id"]);
                 user.Gender = Convert.ToInt16(dr["gender"]);
                 user.Location = dr["location"].ToString();
-                users.Add(user);
+                user.Birthday = Convert.ToDateTime(dr["birthday"]);
+                penders.Add(user);
             }
             con.Close();
+            List<List<User>> users = new List<List<User>>();
+            users.Add(celebrators);
+            users.Add(penders);
             return users;
         }
         private SqlCommand createGetCelebratorsCommand(SqlConnection con, int id)
@@ -83,6 +89,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 user.Id = Convert.ToInt32(dr["id"]);
                 user.UserName = dr["userName"].ToString();
                 user.Email = dr["email"].ToString();
+                user.Location = dr["location"].ToString();
                 user.Gender = Convert.ToInt16(dr["gender"]);
                 user.Birthday = Convert.ToDateTime(dr["birthday"]);
             }
@@ -112,6 +119,7 @@ namespace Connectify_FinalProj_Backend.DAL
                 User user = new User();
                 user.Id = Convert.ToInt32(dr["id"]);
                 user.UserName = dr["userName"].ToString();
+                user.Birthday = Convert.ToDateTime(dr["birthday"]);
                 userFriends.Add(user);
             }
             con.Close();
@@ -228,6 +236,36 @@ namespace Connectify_FinalProj_Backend.DAL
             return command;
         }
         
+        public List<User> searchUsersForChat(string name, int id)
+        {
+            SqlConnection con = Connect();
+            SqlCommand command = createSearchUsersForCharCommand(con, name, id);
+            SqlDataReader dr = command.ExecuteReader(CommandBehavior.CloseConnection);
+            List<User> users = new List<User>();
+            while (dr.Read())
+            {
+                User user = new User();
+                user.Id = Convert.ToInt32(dr["id"]);
+                user.UserName = dr["userName"].ToString();
+                users.Add(user);
+            }
+            con.Close();
+            if (users != null) return users;
+            return null;
+        }
+
+
+        private SqlCommand createSearchUsersForCharCommand(SqlConnection con, string name, int id)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@id", id);
+            command.CommandText = "spGetSearchUsersForChat";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
+        }
         public List<User> searchUsers(string name, int id)
         {
             SqlConnection con = Connect();
@@ -338,6 +376,116 @@ namespace Connectify_FinalProj_Backend.DAL
             // open the database connection
             con.Open();
             return con;
+        }
+
+        public int initializeDBScriptWithUsers()
+        {
+            int numAffected = 0;
+            SqlConnection con = Connect();
+            Random rnd = new Random();
+
+            string[] cities = { "Tel-Aviv", "Jerusalem", "Netanya", "Haifa", "Ashqelon", "Eilat",
+                "Ruppin", "Tzoran", "Qadima", "Ramat-Gan", "Rishon Le'Zion", "Yehud", "Hadera", "Qiryat Shmona" };
+            string[] maleFirstNames = { "yotam", "dotan", "liel", "lidor", "moshe", "yuval", "benny", "nir", "or", "dor" };
+            string[] femaleFirstNames = { "yuval", "maya", "daniela", "ruth", "tamar", "avigail", "ester", "noy", "orly", "avishag", "anat" };
+            string[] LastNames = { "cohen", "levi", "nagar", "shvili", "israeli", "tzioni", "fadlon", "alfasi" };
+            List<string> emails = new List<string>();
+            
+            //CREATE MALE USERS
+            for (int i = 0; i < 100; i++)
+            {
+                string firstName = maleFirstNames[rnd.Next(maleFirstNames.Length)];
+                string lastName = LastNames[rnd.Next(LastNames.Length)];
+                string location = cities[rnd.Next(cities.Length)];
+                string email = firstName + lastName + "@gmail.com";
+                if(emails.Count>0)
+                    if (emails.Contains(email))
+                    {
+                        int val = rnd.Next(0, 15);
+                        email = firstName + lastName + val + "@gmail.com";
+                        if (emails.Contains(email)) email = firstName + lastName + val + "1@gmail.com";
+                        emails.Add(email);
+                    }
+
+                emails.Add(email);
+                string userName = firstName + " " + lastName;
+                string password = "123";
+                DateTime birthday = RandomDate();
+                short gender = 1;
+                SqlCommand command = createPostUserCommand(con, new User(userName, email, location, password, birthday, gender, firstName, lastName));
+                numAffected += command.ExecuteNonQuery();
+            }
+
+            //CREATE FEMALE USERS
+            for (int i = 0; i < 100; i++)
+            {
+                string firstName = femaleFirstNames[rnd.Next(maleFirstNames.Length)];
+                string lastName = LastNames[rnd.Next(LastNames.Length)];
+                string location = cities[rnd.Next(cities.Length)];
+                string email = firstName + lastName + "@gmail.com";
+                if (emails.Count > 0)
+                    if (emails.Contains(email))
+                    {
+                        int val = rnd.Next(0, 15);
+                        email = firstName + lastName + val + "@gmail.com";
+                        if(emails.Contains(email)) email = firstName + lastName + val + "1@gmail.com";
+                        emails.Add(email);
+                    }
+
+                emails.Add(email);
+                string userName = firstName + " " + lastName;
+                string password = "123";
+                DateTime birthday = RandomDate();
+                short gender = 0;
+                SqlCommand command = createPostUserCommand(con, new User(userName, email, location, password, birthday, gender, firstName, lastName));
+                numAffected += command.ExecuteNonQuery();
+            }
+            con.Close();
+            return numAffected;
+        }
+
+        private DateTime RandomDate()
+        {
+            Random gen = new Random();
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(gen.Next(range));
+        }
+
+        public int initializeTheDBWithUsersFriendshipConnections()
+        {
+            int numAffected = 0;
+            string[] statuses = { "APPROVED", "PENDING" };
+            Random rnd = new Random();
+            SqlConnection con = Connect();
+
+            for(int i=1; i<=100; i++)
+            {
+                string status = statuses[rnd.Next(statuses.Length)];
+                int user2_id = rnd.Next(1, 207);
+                while(user2_id == i) user2_id = rnd.Next(1, 207);
+                SqlCommand command =createScriptFriendShipCommand(con,i, user2_id, status);
+                numAffected+= command.ExecuteNonQuery();
+                if(status == "APPROVED")
+                {
+                    command = createScriptFriendShipCommand(con, user2_id, i, status);
+                    numAffected += command.ExecuteNonQuery();
+                }
+            }
+            return numAffected;
+        }
+
+        private SqlCommand createScriptFriendShipCommand(SqlConnection con, int user1_id,int user2_id, string status)
+        {
+            SqlCommand command = new SqlCommand();
+            command.Parameters.AddWithValue("@user1_id", user1_id);
+            command.Parameters.AddWithValue("@user2_id", user2_id);
+            command.Parameters.AddWithValue("@status", status);
+            command.CommandText = "spFriendShipScript";
+            command.Connection = con;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 10; // in seconds
+            return command;
         }
     }
 }

@@ -85,13 +85,30 @@ namespace Connectify_FinalProj_Backend.Controllers
         }
 
         [HttpGet]
+        [Route("api/Users/{id}/search/{name}/chat")]
+        public IHttpActionResult SearchForChat(string name, int id)
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                List<User> usersToReturn = UDAL.searchUsersForChat(name, id);
+                if (usersToReturn != null) return Content(HttpStatusCode.OK, usersToReturn);
+                return Content(HttpStatusCode.NotFound, "There are no users with this name");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("api/Users/{id}/dashboard")]
         public IHttpActionResult getDashboard(int id)
         {
             try
             {
                 Users_DAL UDAL = new Users_DAL();
-                List<User> usersToReturn = UDAL.getDashboard(id);
+                List<List<User>> usersToReturn = UDAL.getDashboard(id);
                 if (usersToReturn.Count>0) return Content(HttpStatusCode.OK, usersToReturn);
                 return Content(HttpStatusCode.NotFound, "You dont have any new notifications");
             }
@@ -194,6 +211,38 @@ namespace Connectify_FinalProj_Backend.Controllers
                 if (UDAL.deleteFriendship(idCurrent, idToDelete) > 0) return Content(HttpStatusCode.OK, "DELETED");
                 else return Content(HttpStatusCode.NotFound, "NO SUCH A FRIENDSHIP");
             }catch(Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/Users/initTheDBwithUsers")]
+        public IHttpActionResult initTheDB()
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                if (UDAL.initializeDBScriptWithUsers() > 0) return Content(HttpStatusCode.Created, "Successfully initialized the DB");
+                else return Content(HttpStatusCode.BadRequest, "Something Bad Happened");
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/Users/initTheDBwithUsersFriendship")]
+        public IHttpActionResult initTheDBWithFriendshipConnection()
+        {
+            try
+            {
+                Users_DAL UDAL = new Users_DAL();
+                if (UDAL.initializeTheDBWithUsersFriendshipConnections() > 0) return Content(HttpStatusCode.Created, "Successfully initialized the DB");
+                else return Content(HttpStatusCode.BadRequest, "Something Bad Happened");
+            }
+            catch (Exception e)
             {
                 return Content(HttpStatusCode.BadGateway, e.Message);
             }

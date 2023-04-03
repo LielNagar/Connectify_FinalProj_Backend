@@ -32,6 +32,14 @@ namespace Connectify_FinalProj_Backend.Models
         }
 
         public Post() { }
+
+        public Post(int publisher, int onWall, string content )
+        { 
+            this.Publisher=publisher;
+            this.OnWall=onWall;
+            this.Content=content;
+        }
+
         public int Publisher { get => publisher; set => publisher = value; }
         public DateTime Date { get => date; set => date = value; }
         public int Likes { get => likes; set => likes = value; }
